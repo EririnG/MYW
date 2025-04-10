@@ -24,7 +24,7 @@ private:
 public:
 	TCPServer(int port) : port(port), running(false)
 	{
-		server_fd = socket(af_inet)
+		server_fd = socket(af_inet);
 	}
 };
 
