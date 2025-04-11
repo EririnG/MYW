@@ -105,3 +105,11 @@ void HandleLoginRequest(SOCKET clientSocket, const std::vector<char>& body)
 	printf("클라이언트 [%lld]에게 Echo 응답 전송 실패: %s\n", clientSocket, body.data() + PACKET_HEADER_SIZE);
 }
 
+void RegisterPacketHandler()
+{
+	packetHandlers[static_cast<uint16_t>(PacketType::ECHO_REQUEST)] = HandleEchoRequest;
+	packetHandlers[static_cast<uint16_t>(PacketType::LOGIN_REQUEST)] = HandleLoginRequest;
+	// 다른 패킷 핸들러 등록
+	printf("패킷 핸들러 등록 완료\n");
+}
+
