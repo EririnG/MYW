@@ -51,3 +51,4 @@ int SendExactly(SOCKET socket, const char* buffer, int length);
 void HandleEchoRequest(SOCKET clientSocket, const std::vector<char>& body);
 void HandleLoginRequest(SOCKET clientSocket, const std::vector<char>& body);
 void RegisterPacketHandler();
+void ProcessPacket(SOCKET clientsocket, uint16_t packetType, const std::vector<char>& body);

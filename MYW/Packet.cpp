@@ -113,3 +113,28 @@ void RegisterPacketHandler()
 	printf("패킷 핸들러 등록 완료\n");
 }
 
+void ProcessPacket(SOCKET clientsocket, uint16_t packetType, const std::vector<char>& body)
+{
+	auto it = packetHandlers.find(packetType);
+	if (it != packetHandlers.end())
+	{
+		PacketHandler handler = it->second;
+		try
+		{
+			handler(clientsocket, body);
+		}
+		catch (const std::exception& e)
+		{
+			printf("패킷 처리 중 오류 발생: %s\n", e.what());
+			PacketHeader header;
+			header.bodySize = htonl(static_cast<uint32_t>(body.size()));
+			header.packetType = htons(static_cast<uint16_t>(PacketError::UNKNOWN_ERROR));
+			SendExactly(clientsocket, reinterpret_cast<const char*>(&header), PACKET_HEADER_SIZE);
+		}
+	}
+	else
+	{
+		printf("알 수 없는 패킷 타입: %u\n", packetType);
+	}
+}
+
