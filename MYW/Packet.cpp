@@ -87,3 +87,21 @@ void HandleEchoRequest(SOCKET clientSocket, const std::vector<char>& body)
 	printf("클라이언트 [%lld]에게 Echo 응답 전송 실패: %s\n", clientSocket, body.data() + PACKET_HEADER_SIZE);
 }
 
+void HandleLoginRequest(SOCKET clientSocket, const std::vector<char>& body)
+{
+	// 로그인 요청 처리
+	PacketHeader header;
+	header.bodySize = htonl(static_cast<uint32_t>(body.size()));
+	header.packetType = htons(static_cast<uint16_t>(PacketType::LOGIN_RESPONSE));
+
+	if (SendExactly(clientSocket, reinterpret_cast<const char*>(&header), PACKET_HEADER_SIZE) > 0)
+	{
+		if (body.empty() || SendExactly(clientSocket, body.data(), body.size()) > 0)
+		{
+			printf("클라이언트 [%lld]에게 Echo 응답 전송 성공: %s\n", clientSocket, body.data());
+			return;
+		}
+	}
+	printf("클라이언트 [%lld]에게 Echo 응답 전송 실패: %s\n", clientSocket, body.data() + PACKET_HEADER_SIZE);
+}
+

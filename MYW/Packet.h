@@ -27,6 +27,12 @@ enum class PacketType : uint16_t
 {
 	ECHO_REQUEST = 0,
 	ECHO_RESPONSE = 1,
+	LOGIN_REQUEST = 2,
+	LOGIN_RESPONSE = 3,
+	LOGOUT_REQUEST = 4,
+	LOGOUT_RESPONSE = 5,
+	CHAT_REQUEST = 6,
+	CHAT_RESPONSE = 7,
 
 };
 enum class PacketError : uint16_t
@@ -43,3 +49,4 @@ void HandleCLient(SOCKET clientSocket);
 int ReceiveExaactly(SOCKET socket, char* buffer, int length);
 int SendExactly(SOCKET socket, const char* buffer, int length);
 void HandleEchoRequest(SOCKET clientSocket, const std::vector<char>& body);
+void HandleLoginRequest(SOCKET clientSocket, const std::vector<char>& body);
