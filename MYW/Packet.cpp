@@ -2,32 +2,54 @@
 
 void HandleCLient(SOCKET clientSocket)
 {
-	char recvbuf[DEFAULT_BUFFER_SIZE];
-	int recvbuflen = DEFAULT_BUFFER_SIZE;
-	int iResult;
+	printf("클라이언트 [%lld] 연결됨. 통신 스레드 시작...\n", clientSocket);
+	char headerBuffer[PACKET_HEADER_SIZE];
+	std::vector<char> bodyBuffer;
 
-	printf("클라이언트 [%lld]이 연결되었습니다.\n", clientSocket);
-
-	// 클라이언트로부터 데이터 수신
-	do
+	while (true)
 	{
-		iResult = recv(clientSocket, recvbuf, recvbuflen, 0);
-		if (iResult > 0)
+		// 패킷 헤더 수신
+		int bytesReceived = ReceiveExaactly(clientSocket, headerBuffer, PACKET_HEADER_SIZE);
+		if (bytesReceived <= 0)
 		{
-			printf("클라이언트 [%lld]로부터 %d 바이트 수신: %s\n", clientSocket, iResult, recvbuf);
-			re
-				// 클라이언트에게 데이터 전송
-				send(clientSocket, recvbuf, iResult, 0);
+			printf("클라이언트 [%lld] 연결 종료\n", clientSocket);
+			break; // 연결 종료
 		}
-		else if (iResult == 0)
+
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(headerBuffer);
+		uint32_t bodySize = ntohl(header->bodySize);
+		uint16_t packetType = ntohs(header->packetType);
+
+		if (bodySize > MAX_BODY_SIZE)
 		{
-			printf("클라이언트 [%lld]이 연결을 종료했습니다.\n", clientSocket);
+			printf("패킷 크기 초과: %u\n", bodySize);
+			break; // 패킷 크기 초과
+		}
+
+
+		if (bodySize > 0)
+		{
+			bodyBuffer.resize(bodySize);
+			int bodyResult = ReceiveExaactly(clientSocket, bodyBuffer.data(), bodySize);
+			if (bodyResult <= 0)
+			{
+				printf("클라이언트 [%lld] 연결 종료\n", clientSocket);
+				break; // 연결 종료
+			}
+			printf("클라이언트 [%lld]로부터 패킷 수신: 타입=%u, 크기=%u\n", clientSocket, packetType, bodySize);
 		}
 		else
 		{
-			printf("recv() 오류: %d\n", WSAGetLastError());
+			bodyBuffer.clear();
+			printf("클라이언트 [%lld]로부터 패킷 수신: 타입=%u, 크기=%u\n", clientSocket, packetType, bodySize);
 		}
-	} while (iResult > 0);
+
+		ProcessPacket(clientSocket, packetType, bodyBuffer);
+	}
+
+	shutdown(clientSocket, SD_SEND);
+	closesocket(clientSocket);
+	printf("클라이언트 [%lld] 소켓 종료\n", clientSocket);
 }
 
 int ReceiveExaactly(SOCKET socket, char* buffer, int length)
