@@ -259,3 +259,66 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+*.sdf
+*.opensdf
+*.suo
+*.VC.db
+*.VC.opendb
+*.cache
+*.user
+*.userosscache
+*.tlog/
+ipch/
+.vs/
+
+# CMake 관련
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# 패키지 매니저나 외부 툴
+.vcpkg_installed/
+.vscode/
+
+# Dotnet 관련 (.NET SDK 사용시)
+.dotnet/
+dbclient/
+
+# 기타
+*.tmp
+*.bak
+*.old
+*.log
+*.swp
+*.DS_Store
+Thumbs.db
+build/
+bin/
+obj/
+*.o
+*.obj
+*.exe
+*.log
+*.pch
+*.ilk
+*.pdb
+*.idb
+*.dll
+*.lib
+*.exp
+
+# Visual Studio 관련
+*.sdf
+*.opensdf
+*.suo
+*.VC.db
+*.VC.opendb
+*.cache
+*.user
+*.userosscache
+*.tlog/
+ipch/
+.vs/
