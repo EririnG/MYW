@@ -1,5 +1,7 @@
 #include "Packet.h"
 
+PacketHandlerMap packetHandlers;
+
 void HandleCLient(SOCKET clientSocket)
 {
 	printf("클라이언트 [%lld] 연결됨. 통신 스레드 시작...\n", clientSocket);

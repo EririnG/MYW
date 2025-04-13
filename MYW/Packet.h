@@ -9,8 +9,9 @@
 #include <ws2tcpip.h>
 #include <functional>
 #include <unordered_map>
+#include <string>
 
-#include "Server.h"
+
 
 #pragma pack(push, 1)
 struct PacketHeader
@@ -43,7 +44,9 @@ enum class PacketError : uint16_t
 };
 
 using PacketHandler = std::function<void(SOCKET, const std::vector<char>&)>;
-std::unordered_map<uint16_t, PacketHandler> packetHandlers;
+using PacketHandlerMap = std::unordered_map<uint16_t, PacketHandler>;
+
+extern PacketHandlerMap packetHandlers;
 
 void HandleCLient(SOCKET clientSocket);
 int ReceiveExaactly(SOCKET socket, char* buffer, int length);

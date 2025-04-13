@@ -1,5 +1,5 @@
-#include "Server.h"
 #include "Packet.h"
+#include "Server.h"
 
 int main()
 {
@@ -23,8 +23,11 @@ int main()
 	hints.ai_socktype = SOCK_STREAM; // TCP
 	hints.ai_protocol = IPPROTO_TCP; // TCP
 	hints.ai_flags = AI_PASSIVE; // 로컬 주소 사용
+	
+	std::string portStr = std::to_string(DEFAULT_PORT);
 
-	result = getaddrinfo(NULL, DEFAULT_PORT, &hints, &resultAddrInfo);
+	result = getaddrinfo(NULL, portStr.c_str()
+		, &hints, &resultAddrInfo);
 	if (result != 0)
 	{
 		printf("getaddrinfo 실패: %d\n", result);
